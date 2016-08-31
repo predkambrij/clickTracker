@@ -22,20 +22,20 @@ import com.google.cloud.datastore.DatastoreOptions;
 
 public class Main {
 
-  /**
-   * Starts the webapp on localhost:8080.
-   */
-  public static void main(String[] args) {
-    port(8080);
-    String kind = "DemoUser";
-    if (args != null) {
-      for (String arg : args) {
-        if (arg.startsWith("kind=")) {
-          kind = arg.substring("kind=".length());
+    /**
+     * Starts the webapp on localhost:8080.
+     */
+    public static void main(String[] args) {
+        port(8080);
+        String kind = "DemoUser";
+        if (args != null) {
+            for (String arg : args) {
+                if (arg.startsWith("kind=")) {
+                    kind = arg.substring("kind=".length());
+                }
+            }
         }
-      }
+        UserController userController =
+            new UserController(new UserService(DatastoreOptions.defaultInstance().service(), kind));
     }
-    UserController userController =
-        new UserController(new UserService(DatastoreOptions.defaultInstance().service(), kind));
-  }
 }

@@ -30,58 +30,58 @@ import spark.Spark;
 
 public class UserController {
 
-  /**
-   * Creates a controller that maps requests to gcloud-java functions.
-   */
-  public UserController(final UserService userService) {
-    Spark.staticFileLocation("/public");
+    /**
+     * Creates a controller that maps requests to gcloud-java functions.
+     */
+    public UserController(final UserService userService) {
+        Spark.staticFileLocation("/public");
 
-    get(
-        "/api/users",
-        (req, res) -> userService.getAllUsers(),
-        UserController::toJson
-    );
+        get(
+            "/api/users",
+            (req, res) -> userService.getAllUsers(),
+            UserController::toJson
+        );
 
-    get(
-        "/api/users/:id",
-        (req, res) -> userService.getUser(req.params(":id")),
-        UserController::toJson
-    );
+        get(
+            "/api/users/:id",
+            (req, res) -> userService.getUser(req.params(":id")),
+            UserController::toJson
+        );
 
-    post(
-        "/api/users",
-        (req, res) -> userService.createUser(req.queryParams("name"), req.queryParams("email")),
-        UserController::toJson
-    );
+        post(
+            "/api/users",
+            (req, res) -> userService.createUser(req.queryParams("name"), req.queryParams("email")),
+            UserController::toJson
+        );
 
-    put(
-        "/api/users/:id",
-        (req, res) -> userService.updateUser(req.params(":id"), req.queryParams("name"), req.queryParams("email")),
-        UserController::toJson
-    );
+        put(
+            "/api/users/:id",
+            (req, res) -> userService.updateUser(req.params(":id"), req.queryParams("name"), req.queryParams("email")),
+            UserController::toJson
+        );
 
-    delete(
-        "/api/users/:id",
-        (req, res) -> userService.deleteUser(req.params(":id")),
-        UserController::toJson
-    );
+        delete(
+            "/api/users/:id",
+            (req, res) -> userService.deleteUser(req.params(":id")),
+            UserController::toJson
+        );
 
-    after(
-        (req, res) -> {
-            res.type("application/json");
-        }
-    );
+        after(
+            (req, res) -> {
+                    res.type("application/json");
+            }
+        );
 
-    exception(
-        IllegalArgumentException.class,
-        (error, req, res) -> {
-            res.status(400);
-            res.body(toJson(new ResponseError(error)));
-        }
-    );
-  }
+        exception(
+            IllegalArgumentException.class,
+            (error, req, res) -> {
+                res.status(400);
+                res.body(toJson(new ResponseError(error)));
+            }
+        );
+    }
 
-  private static String toJson(Object object) {
-    return new Gson().toJson(object);
-  }
+    private static String toJson(Object object) {
+        return new Gson().toJson(object);
+    }
 }
