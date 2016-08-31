@@ -41,35 +41,31 @@ public class UserService {
    * @param kind the kind for the Datastore entities in this demo
    */
   public UserService(Datastore datastore, String kind) {
-    this.datastore = datastore;
-    this.keyFactory = datastore.newKeyFactory().kind(kind);
-    this.kind = kind;
+      this.datastore = datastore;
+      this.keyFactory = datastore.newKeyFactory().kind(kind);
+      this.kind = kind;
   }
 
   /**
    * Return a list of all users.
    */
   public List<User> getAllUsers() {
-    Query<Entity> query =
-        Query.gqlQueryBuilder(Query.ResultType.ENTITY, "SELECT * FROM " + kind).build();
-    QueryResults<Entity> results = datastore.run(query);
-    List<User> users = new ArrayList<>();
-    while (results.hasNext()) {
-      Entity result = results.next();
-      users.add(
-          new User(result.getString("id"), result.getString("name"), result.getString("email")));
-    }
-    return users;
+      Query<Entity> query = Query.gqlQueryBuilder(Query.ResultType.ENTITY, "SELECT * FROM " + kind).build();
+      QueryResults<Entity> results = datastore.run(query);
+      List<User> users = new ArrayList<>();
+      while (results.hasNext()) {
+          Entity result = results.next();
+          users.add(new User(result.getString("id"), result.getString("name"), result.getString("email")));
+      }
+      return users;
   }
 
   /**
    * Return the user with the given id.
    */
   User getUser(String id) {
-    Entity entity = datastore.get(keyFactory.newKey(id));
-    return entity == null
-        ? null
-        : new User(entity.getString("id"), entity.getString("name"), entity.getString("email"));
+      Entity entity = datastore.get(keyFactory.newKey(id));
+      return entity == null ? null : new User(entity.getString("id"), entity.getString("name"), entity.getString("email"));
   }
 
   /**

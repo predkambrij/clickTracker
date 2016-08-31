@@ -36,37 +36,52 @@ public class UserController {
   public UserController(final UserService userService) {
     Spark.staticFileLocation("/public");
 
-    get("/api/users", (req, res) -> userService.getAllUsers(), json());
+    get(
+        "/api/users",
+        (req, res) -> userService.getAllUsers(),
+        UserController::toJson
+    );
 
-    get("/api/users/:id", (req, res) -> userService.getUser(req.params(":id")), json());
+    get(
+        "/api/users/:id",
+        (req, res) -> userService.getUser(req.params(":id")),
+        UserController::toJson
+    );
 
-    post("/api/users",
+    post(
+        "/api/users",
         (req, res) -> userService.createUser(req.queryParams("name"), req.queryParams("email")),
-        json());
+        UserController::toJson
+    );
 
-    put("/api/users/:id", (req, res) -> userService.updateUser(
-            req.params(":id"),
-            req.queryParams("name"),
-            req.queryParams("email")
-        ), json());
+    put(
+        "/api/users/:id",
+        (req, res) -> userService.updateUser(req.params(":id"), req.queryParams("name"), req.queryParams("email")),
+        UserController::toJson
+    );
 
-    delete("/api/users/:id", (req, res) -> userService.deleteUser(req.params(":id")), json());
+    delete(
+        "/api/users/:id",
+        (req, res) -> userService.deleteUser(req.params(":id")),
+        UserController::toJson
+    );
 
-    after((req, res) -> {
-      res.type("application/json");
-    });
+    after(
+        (req, res) -> {
+            res.type("application/json");
+        }
+    );
 
-    exception(IllegalArgumentException.class, (error, req, res) -> {
-      res.status(400);
-      res.body(toJson(new ResponseError(error)));
-    });
+    exception(
+        IllegalArgumentException.class,
+        (error, req, res) -> {
+            res.status(400);
+            res.body(toJson(new ResponseError(error)));
+        }
+    );
   }
 
   private static String toJson(Object object) {
     return new Gson().toJson(object);
-  }
-
-  private static ResponseTransformer json() {
-    return UserController::toJson;
   }
 }
