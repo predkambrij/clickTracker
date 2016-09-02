@@ -25,8 +25,13 @@ import com.google.cloud.datastore.KeyFactory;
 import com.google.cloud.datastore.Query;
 import com.google.cloud.datastore.QueryResults;
 
+import com.google.api.client.googleapis.auth.oauth2.*;
+import com.google.api.client.http.javanet.*;
+import com.google.api.client.json.jackson2.*;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.io.IOException;
 
 public class UserService {
 
@@ -116,5 +121,55 @@ public class UserService {
     private void failIfInvalid(String name, String email) {
         checkArgument(name != null && !name.isEmpty(), "Parameter 'name' cannot be empty");
         checkArgument(email != null && !email.isEmpty(), "Parameter 'email' cannot be empty");
+    }
+
+    public void exc() {
+        String clientID = "553539452176-ogmj31nnv0sb0f3e18e286qcnm7tgb1m.apps.googleusercontent.com";
+        String clientSecret = "DbdeZTZNMmjzdro9d0FcuKyv";
+        String redirectURI = "https://o7testproj.appspot.com/oauth2callback";
+        String authCode = "";
+
+        GoogleTokenResponse tokenResponse = null;
+        try {
+            tokenResponse =
+                new GoogleAuthorizationCodeTokenRequest(
+                    new NetHttpTransport(),
+                    JacksonFactory.getDefaultInstance(),
+                    "https://www.googleapis.com/oauth2/v4/token",
+                    clientID,
+                    clientSecret,
+                    authCode,
+                    redirectURI
+                ).execute();
+
+        } catch (IOException e) {
+
+        }
+
+        String accessToken = tokenResponse.getAccessToken();
+
+        // Use access token to call API
+        // GoogleCredential credential = new GoogleCredential().setAccessToken(accessToken);
+        // Drive drive =
+        //     new Drive.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance(), credential)
+        //         .setApplicationName("Auth Code Exchange Demo")
+        //         .build();
+        // File file = drive.files().get("appfolder").execute();
+
+        // Get profile info from ID token
+        try {
+            GoogleIdToken idToken = tokenResponse.parseIdToken();
+            GoogleIdToken.Payload payload = idToken.getPayload();
+            String userId = payload.getSubject();  // Use this value as a key to identify a user.
+            String email = payload.getEmail();
+            boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
+            String name = (String) payload.get("name");
+            String pictureUrl = (String) payload.get("picture");
+            String locale = (String) payload.get("locale");
+            String familyName = (String) payload.get("family_name");
+            String givenName = (String) payload.get("given_name");
+        } catch (IOException e) {
+
+        }
     }
 }

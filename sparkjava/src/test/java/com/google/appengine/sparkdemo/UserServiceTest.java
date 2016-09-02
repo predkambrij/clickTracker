@@ -41,99 +41,99 @@ import java.util.List;
 
 public class UserServiceTest {
 
-  private static final LocalDatastoreHelper HELPER = LocalDatastoreHelper.create(1.0);
-  private static final DatastoreOptions DATASTORE_OPTIONS = HELPER.options();
-  private static final Datastore DATASTORE = DATASTORE_OPTIONS.service();
-  private static final String KIND = "DemoUser";
-  private static final UserService USER_SERVICE = new UserService(DATASTORE, KIND);
-  private static final String USER_ID = "myId";
-  private static final String USER_NAME = "myName";
-  private static final String USER_EMAIL = "my@email.com";
-  private static final User USER = new User(USER_ID, USER_NAME, USER_EMAIL);
-  private static final Key USER_KEY =
-      Key.builder(DATASTORE_OPTIONS.projectId(), KIND, USER_ID).build();
-  private static final Entity USER_RECORD = Entity.builder(USER_KEY)
-      .set("id", USER_ID)
-      .set("name", USER_NAME)
-      .set("email", USER_EMAIL)
-      .build();
+    private static final LocalDatastoreHelper HELPER = LocalDatastoreHelper
+            .create(1.0);
+    private static final DatastoreOptions DATASTORE_OPTIONS = HELPER.options();
+    private static final Datastore DATASTORE = DATASTORE_OPTIONS.service();
+    private static final String KIND = "DemoUser";
+    private static final UserService USER_SERVICE = new UserService(DATASTORE,
+            KIND);
+    private static final String USER_ID = "myId";
+    private static final String USER_NAME = "myName";
+    private static final String USER_EMAIL = "my@email.com";
+    private static final User USER = new User(USER_ID, USER_NAME, USER_EMAIL);
+    private static final Key USER_KEY = Key.builder(
+            DATASTORE_OPTIONS.projectId(), KIND, USER_ID).build();
+    private static final Entity USER_RECORD = Entity.builder(USER_KEY)
+            .set("id", USER_ID).set("name", USER_NAME).set("email", USER_EMAIL)
+            .build();
 
-  @BeforeClass
-  public static void beforeClass() throws IOException, InterruptedException {
-    HELPER.start();
-  }
-
-  @Before
-  public void setUp() {
-    StructuredQuery<Key> query = Query.keyQueryBuilder().build();
-    QueryResults<Key> result = DATASTORE.run(query);
-    DATASTORE.delete(Iterators.toArray(result, Key.class));
-    DATASTORE.add(USER_RECORD);
-  }
-
-  @AfterClass
-  public static void afterClass() throws IOException, InterruptedException {
-    HELPER.stop();
-  }
-
-  @Test
-  public void testGetAllUsers() {
-    List<User> allUsers = USER_SERVICE.getAllUsers();
-    assertEquals(1, allUsers.size());
-    User actualUser = allUsers.get(0);
-    assertEquals(USER.getId(), actualUser.getId());
-    assertEquals(USER.getName(), actualUser.getName());
-    assertEquals(USER.getEmail(), actualUser.getEmail());
-  }
-
-  @Test
-  public void testCreateUser() {
-    String name = "myNewName";
-    String email = "mynew@email.com";
-    User actualUser = USER_SERVICE.createUser(name, email);
-    assertEquals(name, actualUser.getName());
-    assertEquals(email, actualUser.getEmail());
-    assertNotNull(actualUser.getId());
-    try {
-      USER_SERVICE.createUser(null, email);
-      fail("Expected to fail because name is null.");
-    } catch (IllegalArgumentException e) {
-      assertEquals("Parameter 'name' cannot be empty", e.getMessage());
+    @BeforeClass
+    public static void beforeClass() throws IOException, InterruptedException {
+        HELPER.start();
     }
-    try {
-      USER_SERVICE.createUser(name, null);
-      fail("Expected to fail because email is null.");
-    } catch (IllegalArgumentException e) {
-      assertEquals("Parameter 'email' cannot be empty", e.getMessage());
-    }
-  }
 
-  @Test
-  public void testDeleteUser() {
-    String result = USER_SERVICE.deleteUser(USER_ID);
-    assertEquals("ok", result);
-    assertNull(DATASTORE.get(USER_KEY));
-  }
+    @Before
+    public void setUp() {
+        StructuredQuery<Key> query = Query.keyQueryBuilder().build();
+        QueryResults<Key> result = DATASTORE.run(query);
+        DATASTORE.delete(Iterators.toArray(result, Key.class));
+        DATASTORE.add(USER_RECORD);
+    }
 
-  @Test
-  public void testUpdateUser() {
-    String newName = "myNewName";
-    String newEmail = "mynew@email.com";
-    User updatedUser = USER_SERVICE.updateUser(USER_ID, newName, newEmail);
-    assertEquals(USER_ID, updatedUser.getId());
-    assertEquals(newName, updatedUser.getName());
-    assertEquals(newEmail, updatedUser.getEmail());
-    try {
-      USER_SERVICE.updateUser(USER_ID, null, USER_EMAIL);
-      fail("Expected to fail because name is null.");
-    } catch (IllegalArgumentException e) {
-      assertEquals("Parameter 'name' cannot be empty", e.getMessage());
+    @AfterClass
+    public static void afterClass() throws IOException, InterruptedException {
+        HELPER.stop();
     }
-    try {
-      USER_SERVICE.updateUser(USER_ID, USER_NAME, null);
-      fail("Expected to fail because email is null.");
-    } catch (IllegalArgumentException e) {
-      assertEquals("Parameter 'email' cannot be empty", e.getMessage());
+
+    @Test
+    public void testGetAllUsers() {
+        List<User> allUsers = USER_SERVICE.getAllUsers();
+        assertEquals(1, allUsers.size());
+        User actualUser = allUsers.get(0);
+        assertEquals(USER.getId(), actualUser.getId());
+        assertEquals(USER.getName(), actualUser.getName());
+        assertEquals(USER.getEmail(), actualUser.getEmail());
     }
-  }
+
+    @Test
+    public void testCreateUser() {
+        String name = "myNewName";
+        String email = "mynew@email.com";
+        User actualUser = USER_SERVICE.createUser(name, email);
+        assertEquals(name, actualUser.getName());
+        assertEquals(email, actualUser.getEmail());
+        assertNotNull(actualUser.getId());
+        try {
+            USER_SERVICE.createUser(null, email);
+            fail("Expected to fail because name is null.");
+        } catch (IllegalArgumentException e) {
+            assertEquals("Parameter 'name' cannot be empty", e.getMessage());
+        }
+        try {
+            USER_SERVICE.createUser(name, null);
+            fail("Expected to fail because email is null.");
+        } catch (IllegalArgumentException e) {
+            assertEquals("Parameter 'email' cannot be empty", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testDeleteUser() {
+        String result = USER_SERVICE.deleteUser(USER_ID);
+        assertEquals("ok", result);
+        assertNull(DATASTORE.get(USER_KEY));
+    }
+
+    @Test
+    public void testUpdateUser() {
+        String newName = "myNewName";
+        String newEmail = "mynew@email.com";
+        User updatedUser = USER_SERVICE.updateUser(USER_ID, newName, newEmail);
+        assertEquals(USER_ID, updatedUser.getId());
+        assertEquals(newName, updatedUser.getName());
+        assertEquals(newEmail, updatedUser.getEmail());
+        try {
+            USER_SERVICE.updateUser(USER_ID, null, USER_EMAIL);
+            fail("Expected to fail because name is null.");
+        } catch (IllegalArgumentException e) {
+            assertEquals("Parameter 'name' cannot be empty", e.getMessage());
+        }
+        try {
+            USER_SERVICE.updateUser(USER_ID, USER_NAME, null);
+            fail("Expected to fail because email is null.");
+        } catch (IllegalArgumentException e) {
+            assertEquals("Parameter 'email' cannot be empty", e.getMessage());
+        }
+    }
 }
