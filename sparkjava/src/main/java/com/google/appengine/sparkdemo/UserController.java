@@ -22,7 +22,7 @@ public class UserController {
     /**
      * Creates a controller that maps requests to gcloud-java functions.
      */
-    public UserController(ILoggerFactory iLoggerFactory, final UserService userService) {
+    public UserController(ILoggerFactory iLoggerFactory, final UserService userService, final CampaignService campaignService) {
         this.slf4jLogger = iLoggerFactory.getLogger(UserController.class.getName());
         this.iLoggerFactory = iLoggerFactory;
 
@@ -47,10 +47,68 @@ public class UserController {
                     halt(401);
                     return "";
                 }
-                return "yesx";
+
+                Campaign campaign = campaignService.createCampaign(
+                    req.queryParams("name"),
+                    req.queryParams("redirectUrl"),
+                    req.queryParams("platforms").split(" ")
+                );
+                return campaign;
             },
             UserController::toJson
         );
+        get(
+            "/api/campaign",
+            (req, res) -> {
+                if (!Common.authenticate(this.iLoggerFactory, req.headers("Authorization"), req.ip())) {
+                    halt(401);
+                    return "";
+                }
+                return campaignService.getAllCampaigns();
+            },
+            UserController::toJson
+        );
+        get(
+            "/api/campaign/:id",
+            (req, res) -> {
+                if (!Common.authenticate(this.iLoggerFactory, req.headers("Authorization"), req.ip())) {
+                    halt(401);
+                    return "";
+                }
+                return campaignService.getCampaign(req.params(":id"));
+            },
+            UserController::toJson
+        );
+
+        put(
+            "/api/campaign/:id",
+            (req, res) -> {
+                if (!Common.authenticate(this.iLoggerFactory, req.headers("Authorization"), req.ip())) {
+                    halt(401);
+                    return "";
+                }
+                return campaignService.updateCampaign(
+                    req.params(":id"),
+                    req.queryParams("name"),
+                    req.queryParams("redirectUrl"),
+                    req.queryParams("platforms").split(" ")
+                );
+            },
+            UserController::toJson
+        );
+
+        delete(
+            "/api/campaign/:id",
+            (req, res) -> {
+                if (!Common.authenticate(this.iLoggerFactory, req.headers("Authorization"), req.ip())) {
+                    halt(401);
+                    return "";
+                }
+                return campaignService.deleteCampaign(req.params(":id"));
+            },
+            UserController::toJson
+        );
+
         get(
             "/api/users",
             (req, res) -> userService.getAllUsers(),

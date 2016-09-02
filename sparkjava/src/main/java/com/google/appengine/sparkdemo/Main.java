@@ -5,6 +5,7 @@ import static spark.Spark.threadPool;
 
 import org.slf4j.LoggerFactory;
 
+import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
 
 public class Main {
@@ -16,6 +17,7 @@ public class Main {
 
         port(8080);
         String kind = Config.datastoreKind;
+        String campaignKind = Config.datastoreCampaignKind;
         if (args != null) {
             for (String arg : args) {
                 if (arg.startsWith("kind=")) {
@@ -24,9 +26,11 @@ public class Main {
             }
         }
 
+        Datastore datastore = DatastoreOptions.defaultInstance().service();
         UserController userController = new UserController(
-                LoggerFactory.getILoggerFactory(),
-            new UserService(DatastoreOptions.defaultInstance().service(), kind)
+            LoggerFactory.getILoggerFactory(),
+            new UserService(datastore, kind),
+            new CampaignService(datastore, campaignKind)
         );
     }
 }
