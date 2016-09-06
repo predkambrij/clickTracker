@@ -13,4 +13,5 @@ public class Config {
     public static String sadminPw = "$2a$12$nJWGNGXgOFEp1F/hkeV75OZyHcjFUYHQKZ1TaYAeZbkn6hXwrL9qG"; // sadminpw
     public static String datastoreKind = "DemoUser";
     public static String datastoreCampaignKind = "campaign";
+    public static String datastoreClickKind = "click";
 }

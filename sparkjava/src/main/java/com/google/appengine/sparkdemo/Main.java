@@ -18,6 +18,7 @@ public class Main {
         port(8080);
         String kind = Config.datastoreKind;
         String campaignKind = Config.datastoreCampaignKind;
+        String clickKind = Config.datastoreClickKind;
         if (args != null) {
             for (String arg : args) {
                 if (arg.startsWith("kind=")) {
@@ -30,7 +31,9 @@ public class Main {
         UserController userController = new UserController(
             LoggerFactory.getILoggerFactory(),
             new UserService(datastore, kind),
-            new CampaignService(datastore, campaignKind)
+            new CampaignService(datastore, campaignKind),
+            new ClickService(datastore, clickKind)
+            //,shardedCounterService
         );
     }
 }

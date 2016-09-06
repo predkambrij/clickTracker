@@ -1,5 +1,6 @@
 package com.google.appengine.sparkdemo;
 
+import static spark.Spark.before;
 import static spark.Spark.after;
 import static spark.Spark.delete;
 import static spark.Spark.exception;
@@ -7,6 +8,8 @@ import static spark.Spark.get;
 import static spark.Spark.post;
 import static spark.Spark.put;
 import static spark.Spark.halt;
+
+import java.util.HashMap;
 
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
@@ -16,14 +19,15 @@ import com.google.gson.Gson;
 import spark.Spark;
 
 public class UserController {
-    Logger slf4jLogger;
     ILoggerFactory iLoggerFactory;
+    HashMap<String, Campaign> campaignsCache = new HashMap<String, Campaign>();
 
     /**
      * Creates a controller that maps requests to gcloud-java functions.
      */
-    public UserController(ILoggerFactory iLoggerFactory, final UserService userService, final CampaignService campaignService) {
-        this.slf4jLogger = iLoggerFactory.getLogger(UserController.class.getName());
+    public UserController(ILoggerFactory iLoggerFactory, final UserService userService, final CampaignService campaignService, final ClickService clickService
+            //, ShardedCounterService shardedCounterService
+            ) {
         this.iLoggerFactory = iLoggerFactory;
 
         Spark.staticFileLocation("/public");
@@ -43,11 +47,6 @@ public class UserController {
         post(
             "/api/campaign",
             (req, res) ->  {
-                if (!Common.authenticate(this.iLoggerFactory, req.headers("Authorization"), req.ip())) {
-                    halt(401);
-                    return "";
-                }
-
                 Campaign campaign = campaignService.createCampaign(
                     req.queryParams("name"),
                     req.queryParams("redirectUrl"),
@@ -57,24 +56,18 @@ public class UserController {
             },
             UserController::toJson
         );
+
         get(
             "/api/campaign",
             (req, res) -> {
-                if (!Common.authenticate(this.iLoggerFactory, req.headers("Authorization"), req.ip())) {
-                    halt(401);
-                    return "";
-                }
-                return campaignService.getAllCampaigns();
+                return campaignService.getAllCampaigns(req.queryParams("platform"));
             },
             UserController::toJson
         );
+
         get(
             "/api/campaign/:id",
             (req, res) -> {
-                if (!Common.authenticate(this.iLoggerFactory, req.headers("Authorization"), req.ip())) {
-                    halt(401);
-                    return "";
-                }
                 return campaignService.getCampaign(req.params(":id"));
             },
             UserController::toJson
@@ -83,16 +76,14 @@ public class UserController {
         put(
             "/api/campaign/:id",
             (req, res) -> {
-                if (!Common.authenticate(this.iLoggerFactory, req.headers("Authorization"), req.ip())) {
-                    halt(401);
-                    return "";
-                }
-                return campaignService.updateCampaign(
+                Campaign result = campaignService.updateCampaign(
                     req.params(":id"),
                     req.queryParams("name"),
                     req.queryParams("redirectUrl"),
                     req.queryParams("platforms").split(" ")
                 );
+                campaignsCache.remove(req.params(":id"));
+                return result;
             },
             UserController::toJson
         );
@@ -100,48 +91,46 @@ public class UserController {
         delete(
             "/api/campaign/:id",
             (req, res) -> {
-                if (!Common.authenticate(this.iLoggerFactory, req.headers("Authorization"), req.ip())) {
-                    halt(401);
-                    return "";
-                }
-                return campaignService.deleteCampaign(req.params(":id"));
+                String result = campaignService.deleteCampaign(req.params(":id"));
+                campaignsCache.remove(req.params(":id"));
+                return result;
+                
             },
             UserController::toJson
         );
 
         get(
-            "/api/users",
-            (req, res) -> userService.getAllUsers(),
-            UserController::toJson
+            "/api/click/:id",
+            (req, res) -> {
+                return clickService.clickAnalytics(req.params(":id"));
+            }
         );
 
         get(
-            "/api/users/:id",
-            (req, res) -> userService.getUser(req.params(":id")),
-            UserController::toJson
+            "/click/:id",
+            (req, res) -> {
+                res.redirect(clickService.addClick(req.params(":id"), campaignService, campaignsCache
+                        //, shardedCounterService
+                        ));
+                return res;
+            }
         );
 
-        post(
-            "/api/users",
-            (req, res) -> userService.createUser(req.queryParams("name"), req.queryParams("email")),
-            UserController::toJson
-        );
-
-        put(
-            "/api/users/:id",
-            (req, res) -> userService.updateUser(req.params(":id"), req.queryParams("name"), req.queryParams("email")),
-            UserController::toJson
-        );
-
-        delete(
-            "/api/users/:id",
-            (req, res) -> userService.deleteUser(req.params(":id")),
-            UserController::toJson
+        before(
+            (req, res) -> {
+                if (req.pathInfo().equals("/api/campaign")
+                        || req.pathInfo().startsWith("/api/campaign/")
+                        || req.pathInfo().startsWith("/api/click/")) {
+                    if (!Common.authenticate(this.iLoggerFactory, req.headers("Authorization"), req.ip())) {
+                        halt(401);
+                    }
+                }
+            }
         );
 
         after(
             (req, res) -> {
-                    res.type("application/json");
+                res.type("application/json");
             }
         );
 
@@ -150,6 +139,15 @@ public class UserController {
             (error, req, res) -> {
                 res.status(400);
                 res.body(toJson(new ResponseError(error)));
+            }
+        );
+
+        exception(
+            Exception.class,
+            (error, req, res) -> {
+                error.printStackTrace();
+                res.status(500);
+                res.body(toJson(new ResponseError("Internal error")));
             }
         );
     }

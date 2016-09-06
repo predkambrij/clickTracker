@@ -35,36 +35,70 @@ public class CampaignService {
         this.kind = kind;
     }
 
-    private String platformsToDb(String[] platforms) {
-        String res = platforms[0];
-        for (int i=1; i<platforms.length; i++) {
-            res += " "+platforms[i];
+    private boolean[] platformsToDb(String[] platforms) {
+        boolean android=false;
+        boolean iphone=false;
+
+        for (int i=0; i<platforms.length; i++) {
+            if ("android".equals(platforms[i])) {
+                android = true;
+            } else if ("iphone".equals(platforms[i])) {
+                iphone = true;
+            }
         }
-        return res;
+        return new boolean[]{android, iphone};
     }
+    private String[] platformsFromDb(boolean pandroid, boolean piphone) {
+        String[] platforms;
+        if (pandroid == true && piphone == true) {
+            platforms = new String[]{"android", "iphone"};
+        } else if (pandroid == true) {
+            platforms = new String[]{"android"};
+        } else {
+            platforms = new String[]{"iphone"};
+        }
+        return platforms;
+    }
+
     public Campaign createCampaign(String name, String redirectUrl, String[] platforms) {
         checkArguments(name, redirectUrl, platforms);
         Campaign campaign = new Campaign(name, redirectUrl, platforms);
 
         Key key = keyFactory.newKey(campaign.getId());
+        List<String> test = Arrays.asList("android", "iphone", "bubu");
+        boolean[] bplatforms = platformsToDb(platforms);
         Entity entity = Entity.builder(key)
             .set("id", campaign.getId())
             .set("name", name)
             .set("redirectUrl", redirectUrl)
-            .set("platforms", platformsToDb(platforms))
+            .set("pandroid", bplatforms[0])
+            .set("piphone", bplatforms[1])
             .build();
 
         datastore.add(entity);
 
         return campaign;
     }
-    public List<Campaign> getAllCampaigns() {
-        Query<Entity> query = Query.gqlQueryBuilder(Query.ResultType.ENTITY, "SELECT * FROM " + kind).build();
+    public List<Campaign> getAllCampaigns(String platform) {
+        Query<Entity> query = null;
+        if (platform == null) {
+            query = Query.gqlQueryBuilder(Query.ResultType.ENTITY, "SELECT * FROM " + kind).build();
+        } else if ("android".equals(platform)){
+            query = Query.gqlQueryBuilder(Query.ResultType.ENTITY, "SELECT * FROM " + kind+ " where pandroid=@pla")
+                    .setBinding("pla", true).build();
+        } else if ("iphone".equals(platform)){
+            query = Query.gqlQueryBuilder(Query.ResultType.ENTITY, "SELECT * FROM " + kind+ " where piphone=@pla")
+                    .setBinding("pla", true).build();
+        } else {
+            throw new IllegalArgumentException("Invalid platform");
+        }
+        
         QueryResults<Entity> results = datastore.run(query);
         List<Campaign> campaigns = new ArrayList<>();
         while (results.hasNext()) {
             Entity result = results.next();
-            String[] platforms = result.getString("platforms").split(" ");
+            String[] platforms = platformsFromDb(result.getBoolean("pandroid"), result.getBoolean("piphone"));
+            
             campaigns.add(new Campaign(result.getString("id"), result.getString("name"), result.getString("redirectUrl"), platforms));
         }
         return campaigns;
@@ -78,7 +112,7 @@ public class CampaignService {
                 entity.getString("id"),
                 entity.getString("name"),
                 entity.getString("redirectUrl"),
-                entity.getString("platforms").split(" ")
+                platformsFromDb(entity.getBoolean("pandroid"), entity.getBoolean("piphone"))
             );
         }
     }
@@ -89,11 +123,13 @@ public class CampaignService {
         if (entity == null) {
             throw new IllegalArgumentException("No campaign with id '" + id + "' found");
         } else {
+            boolean[] bplatforms = platformsToDb(platforms);
             entity = Entity.builder(entity)
                 .set("id", id)
                 .set("name", name)
                 .set("redirectUrl", redirectUrl)
-                .set("platforms", platformsToDb(platforms))
+                .set("pandroid", bplatforms[0])
+                .set("piphone", bplatforms[1])
                 .build();
             datastore.update(entity);
         }

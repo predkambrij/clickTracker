@@ -20,6 +20,7 @@ public class Common {
 
         return BCrypt.checkpw(password_plaintext, stored_hash);
     }
+
     public static boolean authenticate(ILoggerFactory iLoggerFactory, String authorization, String ip) {
         Logger logger = iLoggerFactory.getLogger(Common.class.getName());
         String extraLogInfo = String.format("%s", ip);
