@@ -19,6 +19,7 @@ public class Main {
         String kind = Config.datastoreKind;
         String campaignKind = Config.datastoreCampaignKind;
         String clickKind = Config.datastoreClickKind;
+        String shardedClickKind = Config.datastoreShardedClickKind;
         if (args != null) {
             for (String arg : args) {
                 if (arg.startsWith("kind=")) {
@@ -32,8 +33,7 @@ public class Main {
             LoggerFactory.getILoggerFactory(),
             new UserService(datastore, kind),
             new CampaignService(datastore, campaignKind),
-            new ClickService(datastore, clickKind)
-            //,shardedCounterService
+            new ClickService(datastore, clickKind, new ShardedClickCounterService(datastore, shardedClickKind))
         );
     }
 }

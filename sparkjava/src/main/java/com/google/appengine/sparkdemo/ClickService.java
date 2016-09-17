@@ -18,6 +18,7 @@ public class ClickService {
     private final Datastore datastore;
     private final KeyFactory keyFactory;
     private final String kind;
+    private final ShardedClickCounterService shardedClickCounter;
 
     /**
      * Constructor for CampaignService.
@@ -25,10 +26,11 @@ public class ClickService {
      * @param datastore gcloud-java Datastore service object to execute requests
      * @param kind the kind for the Datastore entities
      */
-    public ClickService(Datastore datastore, String kind) {
+    public ClickService(Datastore datastore, String kind, ShardedClickCounterService shardedClickCounter) {
         this.datastore = datastore;
         this.keyFactory = datastore.newKeyFactory().kind(kind);
         this.kind = kind;
+        this.shardedClickCounter = shardedClickCounter;
     }
 
     public String addClick(String campaignId, CampaignService campaignService, HashMap<String, Campaign> campaignsCache
@@ -64,6 +66,9 @@ public class ClickService {
     }
 
     public String clickAnalytics(String campaignId) {
+        shardedClickCounter.incrementCountCampaign(campaignId);
+        //long count = shardedClickCounter.getCount(campaignId); System.out.println(count);
+/*
         Query<Entity> query = Query.gqlQueryBuilder(Query.ResultType.ENTITY, "SELECT count() FROM " + kind+ " where campaignId=@cid")
                 .setBinding("cid", campaignId).build();
         QueryResults<Entity> results = datastore.run(query);
@@ -75,6 +80,7 @@ public class ClickService {
             String t = result.getString("id");
             System.out.println(t);
         }
+*/
         return "";
     }
 }

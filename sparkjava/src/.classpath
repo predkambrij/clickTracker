@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="test/java"/>
+	<classpathentry kind="src" path="main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/proj/target/managed-vms-spark-1.0-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="/home/developer/.m2/repository/junit/junit/4.12/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="/home/developer/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="/home/developer/.m2/repository/com/portingle/slf4jtesting/1.0.0/slf4jtesting-1.0.0.jar"/>
+	<classpathentry kind="lib" path="/home/developer/.m2/repository/org/mockito/mockito-core/2.1.0-beta.120/mockito-core-2.1.0-beta.120.jar"/>
+	<classpathentry kind="lib" path="/home/developer/.m2/repository/com/google/appengine/appengine-api-1.0-sdk/1.9.36/appengine-api-1.0-sdk-1.9.36.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

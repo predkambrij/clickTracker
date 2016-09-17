@@ -14,4 +14,5 @@ public class Config {
     public static String datastoreKind = "DemoUser";
     public static String datastoreCampaignKind = "campaign";
     public static String datastoreClickKind = "click";
+    public static String datastoreShardedClickKind = "shardedClickCounter";
 }
