@@ -38,7 +38,7 @@ public class CommonTest {
         }
 
         Logger mockLogger = Mockito.mock(Logger.class);
-        setFinalStatic(Common.class.getField("logger"), mockLogger);
+        setFinalStatic(Common.class.getDeclaredField("logger"), mockLogger);
 
         PowerMockito.spy(Common.class);
         PowerMockito

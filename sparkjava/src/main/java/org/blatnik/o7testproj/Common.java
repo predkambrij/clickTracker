@@ -11,7 +11,7 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 public class Common {
-    public static final Logger logger = LoggerFactory.getILoggerFactory().getLogger(Common.class.getName());
+    private static final Logger logger = LoggerFactory.getILoggerFactory().getLogger(Common.class.getName());
 
     public static String hashPassword(String password_plaintext) {
         int workload = 12;
