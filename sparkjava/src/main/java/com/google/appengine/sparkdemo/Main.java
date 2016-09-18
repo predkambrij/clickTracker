@@ -10,28 +10,26 @@ import com.google.cloud.datastore.DatastoreOptions;
 
 public class Main {
     public static void main(String[] args) {
-        final int maxThreads = 8;
-        final int minThreads = 2;
+        final int maxThreads = 50;
+        final int minThreads = 10;
         final int timeOutMillis = 30000;
         threadPool(maxThreads, minThreads, timeOutMillis);
 
         port(8080);
-        String kind = Config.datastoreKind;
         String campaignKind = Config.datastoreCampaignKind;
         String clickKind = Config.datastoreClickKind;
         String shardedClickKind = Config.datastoreShardedClickKind;
         if (args != null) {
             for (String arg : args) {
-                if (arg.startsWith("kind=")) {
-                    kind = arg.substring("kind=".length());
+                if (arg.startsWith("campaignKind=")) {
+                	campaignKind = arg.substring("campaignKind=".length());
                 }
             }
         }
 
         Datastore datastore = DatastoreOptions.defaultInstance().service();
-        UserController userController = new UserController(
+        new UserController(
             LoggerFactory.getILoggerFactory(),
-            new UserService(datastore, kind),
             new CampaignService(datastore, campaignKind),
             new ClickService(datastore, clickKind, new ShardedClickCounterService(datastore, shardedClickKind))
         );

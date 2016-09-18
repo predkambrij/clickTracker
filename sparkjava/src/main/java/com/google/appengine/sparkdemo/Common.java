@@ -6,8 +6,11 @@ import java.util.Base64;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 public class Common {
+    public static Marker notifyAdmin = MarkerFactory.getMarker("NOTIFY_ADMIN");
     public static String hashPassword(String password_plaintext) {
         int workload = 12;
         String salt = BCrypt.gensalt(workload);
@@ -30,6 +33,7 @@ public class Common {
             String credentials = new String(Base64.getDecoder().decode(base64Credentials), Charset.forName("UTF-8"));
             // credentials = username:password
             final String[] values = credentials.split(":", 2);
+
             if (values.length == 2) {
                 if (Config.sadminUsername.equals(values[0]) && Common.checkPassword(values[1], Config.sadminPw)) {
                     logger.info("sadmin auth succeed {}", extraLogInfo);
@@ -37,10 +41,10 @@ public class Common {
                 }
                 logger.info("sadmin auth failed ({}:{}) {}", values[0], values[1], extraLogInfo);
             } else {
-                logger.info("sadmin auth failed: invalid format ({}) {}", authorization, extraLogInfo);
+                logger.info(notifyAdmin, "sadmin auth failed: invalid format ({}) {}", authorization, extraLogInfo);
             }
         } else {
-            logger.info("sadmin auth failed: invalid basic format ({}) {}", authorization, extraLogInfo);
+            logger.info(notifyAdmin, "sadmin auth failed: invalid basic format ({}) {}", authorization, extraLogInfo);
         }
         try {
             // slow down possible brute force

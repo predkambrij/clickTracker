@@ -20,12 +20,11 @@ import spark.Spark;
 
 public class UserController {
     ILoggerFactory iLoggerFactory;
-    HashMap<String, Campaign> campaignsCache = new HashMap<String, Campaign>();
 
     /**
      * Creates a controller that maps requests to gcloud-java functions.
      */
-    public UserController(ILoggerFactory iLoggerFactory, final UserService userService, final CampaignService campaignService, final ClickService clickService
+    public UserController(ILoggerFactory iLoggerFactory, final CampaignService campaignService, final ClickService clickService
             //, ShardedCounterService shardedCounterService
             ) {
         this.iLoggerFactory = iLoggerFactory;
@@ -82,7 +81,6 @@ public class UserController {
                     req.queryParams("redirectUrl"),
                     req.queryParams("platforms").split(" ")
                 );
-                campaignsCache.remove(req.params(":id"));
                 return result;
             },
             UserController::toJson
@@ -92,7 +90,6 @@ public class UserController {
             "/api/campaign/:id",
             (req, res) -> {
                 String result = campaignService.deleteCampaign(req.params(":id"));
-                campaignsCache.remove(req.params(":id"));
                 return result;
                 
             },
@@ -109,7 +106,7 @@ public class UserController {
         get(
             "/click/:id",
             (req, res) -> {
-                res.redirect(clickService.addClick(req.params(":id"), campaignService, campaignsCache
+                res.redirect(clickService.addClick(req.params(":id"), campaignService
                         //, shardedCounterService
                         ));
                 return res;

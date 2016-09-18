@@ -8,6 +8,8 @@
   <version>1.0</version>
 
     <properties>
+        <logback.version>1.0.1</logback.version>
+        <slf4j.version>1.7.21</slf4j.version>
         <codehaus-versions-maven-plugin-version>2.2</codehaus-versions-maven-plugin-version>
         <jacoco-maven-plugin-version>0.7.6.201602180812</jacoco-maven-plugin-version>
         <project.http.version>1.19.0</project.http.version>
@@ -56,8 +58,19 @@
     </dependency>
     <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>1.7.21</version>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback.version}</version>
+    </dependency>
+
+    <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${logback.version}</version>
     </dependency>
     <dependency>
       <groupId>com.sparkjava</groupId>

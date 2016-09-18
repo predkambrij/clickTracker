@@ -33,24 +33,20 @@ public class ClickService {
         this.shardedClickCounter = shardedClickCounter;
     }
 
-    public String addClick(String campaignId, CampaignService campaignService, HashMap<String, Campaign> campaignsCache
+    public String addClick(String campaignId, CampaignService campaignService
             //, ShardedCounterService shardedCounterService
             ) {
         // persistence, to avoid excessive db access
         Campaign campaign = null;
-        if (campaignsCache.containsKey(campaignId)) {
-            campaign = campaignsCache.get(campaignId);
-        } else {
-            // get the campaign from db
-            campaign = campaignService.getCampaign(campaignId);
-            campaignsCache.put(campaignId, campaign);
-        }
+        campaign = campaignService.getCampaign(campaignId);
 
         // if campaign id is invalid, redirect to outfit7
         if (campaign == null) {
             return "http://outfit7.com";
         }
-        /*
+
+        shardedClickCounter.incrementCountCampaign(campaignId);
+/*
         Click click = new Click(campaignId);
 
         Key key = keyFactory.newKey(click.getId());
@@ -60,27 +56,15 @@ public class ClickService {
             .build();
 
         datastore.add(entity);
+        /*
 */
 
         return campaign.getRedirectUrl();
     }
 
     public String clickAnalytics(String campaignId) {
-        shardedClickCounter.incrementCountCampaign(campaignId);
-        //long count = shardedClickCounter.getCount(campaignId); System.out.println(count);
-/*
-        Query<Entity> query = Query.gqlQueryBuilder(Query.ResultType.ENTITY, "SELECT count() FROM " + kind+ " where campaignId=@cid")
-                .setBinding("cid", campaignId).build();
-        QueryResults<Entity> results = datastore.run(query);
-        long clickNum = 0;
-        
-        while (results.hasNext()) {
-            Entity result = results.next();
-            clickNum++;
-            String t = result.getString("id");
-            System.out.println(t);
-        }
-*/
-        return "";
+        long count = shardedClickCounter.getCount(campaignId);
+        System.out.println(count);
+        return count+"";
     }
 }
