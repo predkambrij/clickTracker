@@ -6,11 +6,13 @@ import java.util.Base64;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
 public class Common {
-    public static Marker notifyAdmin = MarkerFactory.getMarker("NOTIFY_ADMIN");
+    public static final Logger logger = LoggerFactory.getILoggerFactory().getLogger(Common.class.getName());
+
     public static String hashPassword(String password_plaintext) {
         int workload = 12;
         String salt = BCrypt.gensalt(workload);
@@ -24,8 +26,7 @@ public class Common {
         return BCrypt.checkpw(password_plaintext, stored_hash);
     }
 
-    public static boolean authenticate(ILoggerFactory iLoggerFactory, String authorization, String ip) {
-        Logger logger = iLoggerFactory.getLogger(Common.class.getName());
+    public static boolean authenticate(String authorization, String ip) {
         String extraLogInfo = String.format("%s", ip);
         if (authorization != null && authorization.startsWith("Basic")) {
             // Authorization: Basic base64credentials
@@ -33,25 +34,23 @@ public class Common {
             String credentials = new String(Base64.getDecoder().decode(base64Credentials), Charset.forName("UTF-8"));
             // credentials = username:password
             final String[] values = credentials.split(":", 2);
-
             if (values.length == 2) {
                 if (Config.sadminUsername.equals(values[0]) && Common.checkPassword(values[1], Config.sadminPw)) {
-                    logger.info("sadmin auth succeed {}", extraLogInfo);
+                    logger.info(Config.strings.get("sadminAuthSucceed"), extraLogInfo);
                     return true;
                 }
-                logger.info("sadmin auth failed ({}:{}) {}", values[0], values[1], extraLogInfo);
+                logger.info(Config.strings.get("sadminAuthFailed"), values[0], values[1], extraLogInfo);
             } else {
-                logger.info(notifyAdmin, "sadmin auth failed: invalid format ({}) {}", authorization, extraLogInfo);
+                logger.info(Config.strings.get("sadminAuthFailedInvalidFormat"), authorization, extraLogInfo);
             }
         } else {
-            logger.info(notifyAdmin, "sadmin auth failed: invalid basic format ({}) {}", authorization, extraLogInfo);
+            logger.info(Config.strings.get("sadminAuthFailedInvalidBasicFormat"), authorization, extraLogInfo);
         }
         try {
-            // slow down possible brute force
+            // slow down for possible brute force
             Thread.sleep(2000);
         } catch (InterruptedException e) {
         }
         return false;
     }
-
 }

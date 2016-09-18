@@ -3,8 +3,6 @@ package org.blatnik.o7testproj;
 import static spark.Spark.port;
 import static spark.Spark.threadPool;
 
-import org.slf4j.LoggerFactory;
-
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
 
@@ -22,14 +20,13 @@ public class Main {
         if (args != null) {
             for (String arg : args) {
                 if (arg.startsWith("campaignKind=")) {
-                	campaignKind = arg.substring("campaignKind=".length());
+                    campaignKind = arg.substring("campaignKind=".length());
                 }
             }
         }
 
         Datastore datastore = DatastoreOptions.defaultInstance().service();
         new MainController(
-            LoggerFactory.getILoggerFactory(),
             new CampaignService(datastore, campaignKind),
             new ClickService(datastore, clickKind, new ShardedClickCounterService(datastore, shardedClickKind))
         );

@@ -24,10 +24,9 @@ public class MainController {
     /**
      * Creates a controller that maps requests to gcloud-java functions.
      */
-    public MainController(ILoggerFactory iLoggerFactory, final CampaignService campaignService, final ClickService clickService
+    public MainController(final CampaignService campaignService, final ClickService clickService
             //, ShardedCounterService shardedCounterService
             ) {
-        this.iLoggerFactory = iLoggerFactory;
 
         Spark.staticFileLocation("/public");
 
@@ -118,7 +117,7 @@ public class MainController {
                 if (req.pathInfo().equals("/api/campaign")
                         || req.pathInfo().startsWith("/api/campaign/")
                         || req.pathInfo().startsWith("/api/click/")) {
-                    if (!Common.authenticate(this.iLoggerFactory, req.headers("Authorization"), req.ip())) {
+                    if (!Common.authenticate(req.headers("Authorization"), req.ip())) {
                         halt(401);
                     }
                 }
