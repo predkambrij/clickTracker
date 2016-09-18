@@ -19,29 +19,11 @@ import com.google.gson.Gson;
 import spark.Spark;
 
 public class MainController {
-    ILoggerFactory iLoggerFactory;
 
     /**
      * Creates a controller that maps requests to gcloud-java functions.
      */
-    public MainController(final CampaignService campaignService, final ClickService clickService
-            //, ShardedCounterService shardedCounterService
-            ) {
-
-        Spark.staticFileLocation("/public");
-
-        get( // TODO
-            "/oauth2callback",
-            (req, res) -> {
-                System.out.println(req.queryParams());
-                System.out.println(req.queryParams("abc"));
-                System.out.println(req.queryParams("ghi"));
-                //userService.exc();
-                return "ok";
-            },
-            MainController::toJson
-        );
-
+    public MainController(final CampaignService campaignService, final ClickService clickService) {
         post(
             "/api/campaign",
             (req, res) ->  {

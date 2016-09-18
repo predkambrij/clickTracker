@@ -65,7 +65,7 @@ public class CampaignService {
         Campaign campaign = new Campaign(name, redirectUrl, platforms);
 
         Key key = keyFactory.newKey(campaign.getId());
-        List<String> test = Arrays.asList("android", "iphone", "bubu");
+
         boolean[] bplatforms = platformsToDb(platforms);
         Entity entity = Entity.builder(key)
             .set("id", campaign.getId())
@@ -92,7 +92,7 @@ public class CampaignService {
         } else {
             throw new IllegalArgumentException("Invalid platform");
         }
-        
+
         QueryResults<Entity> results = datastore.run(query);
         List<Campaign> campaigns = new ArrayList<>();
         while (results.hasNext()) {
@@ -139,7 +139,7 @@ public class CampaignService {
     public String deleteCampaign(String id) {
         Key key = keyFactory.newKey(id);
         datastore.delete(key);
-        return "ok";
+        return "{\"response\":\"ok\"}";
     }
 
     private void checkArguments(String name, String redirectUrl, String[] platforms) {
