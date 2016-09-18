@@ -1,4 +1,4 @@
-package com.google.appengine.sparkdemo;
+package org.blatnik.o7testproj;
 
 import static com.google.common.base.Preconditions.checkArgument;
 

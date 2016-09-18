@@ -1,5 +1,6 @@
-package com.google.appengine.sparkdemo;
+package org.blatnik.o7testproj;
 
+import org.blatnik.o7testproj.Common;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.slf4j.Logger;

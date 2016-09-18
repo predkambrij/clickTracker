@@ -1,4 +1,4 @@
-package com.google.appengine.sparkdemo;
+package org.blatnik.o7testproj;
 
 import static spark.Spark.before;
 import static spark.Spark.after;
@@ -18,13 +18,13 @@ import com.google.gson.Gson;
 
 import spark.Spark;
 
-public class UserController {
+public class MainController {
     ILoggerFactory iLoggerFactory;
 
     /**
      * Creates a controller that maps requests to gcloud-java functions.
      */
-    public UserController(ILoggerFactory iLoggerFactory, final CampaignService campaignService, final ClickService clickService
+    public MainController(ILoggerFactory iLoggerFactory, final CampaignService campaignService, final ClickService clickService
             //, ShardedCounterService shardedCounterService
             ) {
         this.iLoggerFactory = iLoggerFactory;
@@ -40,7 +40,7 @@ public class UserController {
                 //userService.exc();
                 return "ok";
             },
-            UserController::toJson
+            MainController::toJson
         );
 
         post(
@@ -53,7 +53,7 @@ public class UserController {
                 );
                 return campaign;
             },
-            UserController::toJson
+            MainController::toJson
         );
 
         get(
@@ -61,7 +61,7 @@ public class UserController {
             (req, res) -> {
                 return campaignService.getAllCampaigns(req.queryParams("platform"));
             },
-            UserController::toJson
+            MainController::toJson
         );
 
         get(
@@ -69,7 +69,7 @@ public class UserController {
             (req, res) -> {
                 return campaignService.getCampaign(req.params(":id"));
             },
-            UserController::toJson
+            MainController::toJson
         );
 
         put(
@@ -83,7 +83,7 @@ public class UserController {
                 );
                 return result;
             },
-            UserController::toJson
+            MainController::toJson
         );
 
         delete(
@@ -93,7 +93,7 @@ public class UserController {
                 return result;
                 
             },
-            UserController::toJson
+            MainController::toJson
         );
 
         get(

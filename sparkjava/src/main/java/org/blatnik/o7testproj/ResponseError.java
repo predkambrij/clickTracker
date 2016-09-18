@@ -1,4 +1,4 @@
-package com.google.appengine.sparkdemo;
+package org.blatnik.o7testproj;
 
 public class ResponseError {
 

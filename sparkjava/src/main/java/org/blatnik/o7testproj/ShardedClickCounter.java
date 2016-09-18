@@ -1,14 +1,16 @@
-package com.google.appengine.sparkdemo;
+package org.blatnik.o7testproj;
 
 import java.util.UUID;
 
-public class Click {
+public class ShardedClickCounter {
     private String id;
     private String campaignId;
+    private long count;
 
-    public Click(String campaignId) {
-        this.id = UUID.randomUUID().toString();
+    public ShardedClickCounter(String id, String campaignId, long count) {
+        this.id = id;
         this.campaignId = campaignId;
+        this.count = count;
     }
 
     // getters setters
@@ -18,6 +20,14 @@ public class Click {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public long getCount() {
+        return this.count;
+    }
+
+    public void setCount(long count) {
+        this.count = count;
     }
 
     public String getCampaignId() {

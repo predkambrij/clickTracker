@@ -1,4 +1,4 @@
-package com.google.appengine.sparkdemo;
+package org.blatnik.o7testproj;
 
 import java.util.ArrayList;
 import java.util.Arrays;

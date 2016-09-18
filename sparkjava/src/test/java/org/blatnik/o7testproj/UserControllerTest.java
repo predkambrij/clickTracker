@@ -14,7 +14,7 @@
  * permissions and limitations under the License.
  */
 
-package com.google.appengine.sparkdemo;
+package org.blatnik.o7testproj;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

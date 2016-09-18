@@ -1,4 +1,4 @@
-package com.google.appengine.sparkdemo;
+package org.blatnik.o7testproj;
 
 import static spark.Spark.port;
 import static spark.Spark.threadPool;
@@ -28,7 +28,7 @@ public class Main {
         }
 
         Datastore datastore = DatastoreOptions.defaultInstance().service();
-        new UserController(
+        new MainController(
             LoggerFactory.getILoggerFactory(),
             new CampaignService(datastore, campaignKind),
             new ClickService(datastore, clickKind, new ShardedClickCounterService(datastore, shardedClickKind))
