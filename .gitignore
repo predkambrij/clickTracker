@@ -1,0 +1,12 @@
+/sparkjava/target
+/sparkjava/src/main/bin
+/sparkjava/src/bin
+
+*.class
+
+/test
+
+/dot_config_gcloud
+/dot_m2
+/w
+

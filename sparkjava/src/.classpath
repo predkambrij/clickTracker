@@ -7,13 +7,12 @@
 	<classpathentry kind="lib" path="/home/developer/.m2/repository/junit/junit/4.12/junit-4.12.jar"/>
 	<classpathentry kind="lib" path="/home/developer/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar"/>
 	<classpathentry kind="lib" path="/home/developer/.m2/repository/org/slf4j/slf4j-api/1.7.21/slf4j-api-1.7.21.jar"/>
-	<classpathentry kind="lib" path="/home/developer/.m2/repository/com/portingle/slf4jtesting/1.0.0/slf4jtesting-1.0.0.jar"/>
 	<classpathentry kind="lib" path="/home/developer/.m2/repository/org/mockito/mockito-core/2.1.0-beta.120/mockito-core-2.1.0-beta.120.jar"/>
-	<classpathentry kind="lib" path="/home/developer/.m2/repository/org/powermock/powermock-module-junit4/1.4.9/powermock-module-junit4-1.4.9.jar"/>
-	<classpathentry kind="lib" path="/home/developer/.m2/repository/org/powermock/powermock-module-junit4-common/1.4.9/powermock-module-junit4-common-1.4.9.jar"/>
-	<classpathentry kind="lib" path="/home/developer/.m2/repository/org/powermock/powermock-core/1.4.9/powermock-core-1.4.9.jar"/>
-	<classpathentry kind="lib" path="/home/developer/.m2/repository/org/powermock/powermock-reflect/1.4.9/powermock-reflect-1.4.9.jar"/>
-	<classpathentry kind="lib" path="/home/developer/.m2/repository/org/powermock/powermock-api-mockito/1.4.9/powermock-api-mockito-1.4.9.jar"/>
-	<classpathentry kind="lib" path="/home/developer/.m2/repository/org/powermock/powermock-api-support/1.4.9/powermock-api-support-1.4.9.jar"/>
+	<classpathentry kind="lib" path="/home/developer/.m2/repository/org/powermock/powermock-module-junit4/1.6.1/powermock-module-junit4-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/home/developer/.m2/repository/org/powermock/powermock-module-junit4-common/1.6.1/powermock-module-junit4-common-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/home/developer/.m2/repository/org/powermock/powermock-core/1.6.1/powermock-core-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/home/developer/.m2/repository/org/powermock/powermock-reflect/1.6.1/powermock-reflect-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/home/developer/.m2/repository/org/powermock/powermock-api-mockito/1.6.1/powermock-api-mockito-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/home/developer/.m2/repository/org/powermock/powermock-api-support/1.6.1/powermock-api-support-1.6.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
