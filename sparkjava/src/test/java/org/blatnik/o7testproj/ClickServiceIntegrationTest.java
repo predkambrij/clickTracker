@@ -62,5 +62,9 @@ public class ClickServiceIntegrationTest {
 
         Object[] resDel = CommonTestUtils.executeRequest(1, "DELETE", "/api/campaign/"+created.getId(), null);
         assertEquals(200, Integer.parseInt((String)resDel[0]));
+
+        Object[] resDo2 = CommonTestUtils.executeRequest(1, "GET", "/click/invalid", null);
+        assertEquals(302, Integer.parseInt((String)resDo2[0]));
+        assertEquals("http://outfit7.com", (String)resDo2[1]);
     }
 }

@@ -26,6 +26,16 @@
 ```curl --user sadmin:sadminpw -iX GET http://127.1.0.3:8080/api/campaign?platform=iphone```
 
 ### Retreiving number of clicks for given campaign
-## TODO
+```curl --user sadmin:sadminpw -iX GET http://127.1.0.3:8080/api/click/082c7290-396c-4610-a330-48ba8f18ffa0```
 
+### Record the click for the given campaign
+```curl -iX GET http://127.1.0.3:8080/click/082c7290-396c-4610-a330-48ba8f18ffa0```
+
+
+### Running tests (excluding integration tests which require access to datastore database)
+```mvn -Dtest='!*IntegrationTest' -Dlogback.configurationFile=logback.xml test```
+### Running only integration tests
+```mvn -Dtest='*IntegrationTest' -Dlogback.configurationFile=logback.xml test```
+### Running all tests
+```mvn -Dlogback.configurationFile=logback.xml test```
 
