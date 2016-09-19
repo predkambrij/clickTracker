@@ -23,7 +23,12 @@ public class ShardedClickCounterService {
     /**
      * Default number of shards.
      */
-    private static final int NUM_SHARDS = 20;
+    private static final int NUM_SHARDS = 200;
+
+    /**
+     * Default number of retries.
+     */
+    private static final int NUM_RETRYIES = 5;
 
     /**
      * A random number generator, for distributing writes across shards.
@@ -43,8 +48,8 @@ public class ShardedClickCounterService {
     }
 
     public void incrementCountCampaign(String campaignId) {
-        for (int retry = 0; retry < 5; retry++) {
-            int shardNum = new Random().nextInt(200)+1;
+        for (int retry = 0; retry < NUM_RETRYIES; retry++) {
+            int shardNum = new Random().nextInt(NUM_SHARDS)+1;
             String keyStr = campaignId+"_"+shardNum;
             Key key = keyFactory.newKey(keyStr);
             Transaction transaction = datastore.newTransaction();

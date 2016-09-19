@@ -81,8 +81,10 @@ public class MainController {
         get(
             "/api/click/:id",
             (req, res) -> {
-                return clickService.clickAnalytics(req.params(":id"));
-            }
+                Response resp = clickService.clickAnalytics(req.params(":id"));
+                return resp;
+            },
+            MainController::toJson
         );
 
         get(

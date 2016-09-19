@@ -33,9 +33,7 @@ public class ClickService {
         this.shardedClickCounter = shardedClickCounter;
     }
 
-    public String addClick(String campaignId, CampaignService campaignService
-            //, ShardedCounterService shardedCounterService
-            ) {
+    public String addClick(String campaignId, CampaignService campaignService) {
         // persistence, to avoid excessive db access
         Campaign campaign = null;
         campaign = campaignService.getCampaign(campaignId);
@@ -46,25 +44,11 @@ public class ClickService {
         }
 
         shardedClickCounter.incrementCountCampaign(campaignId);
-/*
-        Click click = new Click(campaignId);
-
-        Key key = keyFactory.newKey(click.getId());
-        Entity entity = Entity.builder(key)
-            .set("id", click.getId())
-            .set("campaignId", campaignId)
-            .build();
-
-        datastore.add(entity);
-        /*
-*/
-
         return campaign.getRedirectUrl();
     }
 
-    public String clickAnalytics(String campaignId) {
+    public Response clickAnalytics(String campaignId) {
         long count = shardedClickCounter.getCount(campaignId);
-        System.out.println(count);
-        return count+"";
+        return new Response(count+"");
     }
 }
