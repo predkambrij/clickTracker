@@ -131,7 +131,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>com.google.appengine.sparkdemo.Main</mainClass>
+              <mainClass>org.blatnik.o7testproj.Main</mainClass>
             </manifest>
           </archive>
         </configuration>
@@ -144,10 +144,10 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.4.0</version>
         <configuration>
-          <mainClass>com.google.appengine.sparkdemo.Main</mainClass>
+          <mainClass>org.blatnik.o7testproj.Main</mainClass>
           <arguments>
             <argument>-jar</argument>
-            <argument>target/sparkdemo-1.0-jar-with-dependencies.jar</argument>
+            <argument>target/o7testproj-1.0-jar-with-dependencies.jar</argument>
           </arguments>
         </configuration>
       </plugin>
