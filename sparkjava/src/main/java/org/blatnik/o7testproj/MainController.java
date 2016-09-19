@@ -48,7 +48,12 @@ public class MainController {
         get(
             "/api/campaign/:id",
             (req, res) -> {
-                return campaignService.getCampaign(req.params(":id"));
+                Campaign c =  campaignService.getCampaign(req.params(":id"));
+                if (c == null) {
+                	halt(404, toJson(new Response("Campaign doesn't exist")));
+                	return null;
+                }
+                return c;
             },
             MainController::toJson
         );
@@ -81,8 +86,12 @@ public class MainController {
         get(
             "/api/click/:id",
             (req, res) -> {
-                Response resp = clickService.clickAnalytics(req.params(":id"));
-                return resp;
+            	if (campaignService.getCampaign(req.params(":id")) == null) {
+            		halt(404, toJson(new Response("Campaign doesn't exist")));
+            		return null;
+            	}
+
+                return clickService.clickAnalytics(req.params(":id"));
             },
             MainController::toJson
         );
