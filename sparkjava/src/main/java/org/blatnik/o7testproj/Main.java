@@ -19,8 +19,12 @@ public class Main {
         String shardedClickKind = Config.datastoreShardedClickKind;
         if (args != null) {
             for (String arg : args) {
-                if (arg.startsWith("campaignKind=")) {
-                    campaignKind = arg.substring("campaignKind=".length());
+                if (arg.startsWith("campaignkind=")) {
+                    campaignKind = arg.substring("campaignkind=".length());
+                } else if (arg.startsWith("clickkind=")) {
+                    clickKind = arg.substring("clickkind=".length());
+                } else if (arg.startsWith("shardedclickkind=")) {
+                    shardedClickKind = arg.substring("shardedclickkind=".length());
                 }
             }
         }

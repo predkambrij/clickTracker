@@ -56,11 +56,12 @@ public class MainController {
         put(
             "/api/campaign/:id",
             (req, res) -> {
+                String[] platforms = null;
                 Campaign result = campaignService.updateCampaign(
                     req.params(":id"),
                     req.queryParams("name"),
                     req.queryParams("redirectUrl"),
-                    req.queryParams("platforms").split(" ")
+                    (req.queryParams("platforms") == null)?null:req.queryParams("platforms").split(" ")
                 );
                 return result;
             },
@@ -70,7 +71,7 @@ public class MainController {
         delete(
             "/api/campaign/:id",
             (req, res) -> {
-                String result = campaignService.deleteCampaign(req.params(":id"));
+                Response result = campaignService.deleteCampaign(req.params(":id"));
                 return result;
                 
             },
@@ -87,9 +88,7 @@ public class MainController {
         get(
             "/click/:id",
             (req, res) -> {
-                res.redirect(clickService.addClick(req.params(":id"), campaignService
-                        //, shardedCounterService
-                        ));
+                res.redirect(clickService.addClick(req.params(":id"), campaignService));
                 return res;
             }
         );

@@ -136,10 +136,10 @@ public class CampaignService {
         return new Campaign(id, name, redirectUrl, platforms);
     }
 
-    public String deleteCampaign(String id) {
+    public Response deleteCampaign(String id) {
         Key key = keyFactory.newKey(id);
         datastore.delete(key);
-        return "{\"response\":\"ok\"}";
+        return new Response("ok");
     }
 
     private void checkArguments(String name, String redirectUrl, String[] platforms) {
