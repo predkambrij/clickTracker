@@ -22,5 +22,7 @@ public class Config {
         put("sadminAuthFailedInvalidFormat", "sadmin auth failed: invalid format ({}) {}");
         put("sadminAuthFailedInvalidBasicFormat", "sadmin auth failed: invalid basic format ({}) {}");
         put("sadminAuthSucceed", "sadmin auth succeed {}");
+        put("createFailed", "create failed {}/{}");
+        put("retryFailed", "retry failed {}/{}");
     }};
 }

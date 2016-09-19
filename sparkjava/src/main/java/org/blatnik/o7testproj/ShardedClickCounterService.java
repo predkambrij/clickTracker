@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreException;
 import com.google.cloud.datastore.Entity;
@@ -19,6 +22,7 @@ public class ShardedClickCounterService {
     private final Datastore datastore;
     private final KeyFactory keyFactory;
     private final String kind;
+    private static final Logger logger = LoggerFactory.getILoggerFactory().getLogger(ShardedClickCounterService.class.getName());
 
     /**
      * Default number of shards.
@@ -70,7 +74,7 @@ public class ShardedClickCounterService {
                     } catch (DatastoreException e) {
                         if (e.code() == 3) {
                             // concurrency problem (transaction closed)
-                            System.out.println("create failed "+retry);
+                            logger.info(Config.strings.get("createFailed"), retry, NUM_RETRYIES);
                         } else {
                             e.printStackTrace();
                         }
@@ -87,7 +91,7 @@ public class ShardedClickCounterService {
                     } catch (DatastoreException e) {
                         if (e.code() == 3) {
                             // concurrency problem (transaction closed)
-                            System.out.println("retry failed "+retry);
+                            logger.info(Config.strings.get("retryFailed"), retry, NUM_RETRYIES);
                         } else {
                             e.printStackTrace();
                         }

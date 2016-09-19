@@ -25,38 +25,9 @@ import spark.Spark;
 import spark.utils.IOUtils;
 
 public class CampaignServiceIntegrationTest {
-    private static Object[] executeRequest(String method, String path, String postDataStr) throws IOException {
-        URL url = new URL("http://localhost:8080" + path);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod(method);
-        connection.setRequestProperty("Authorization", "Basic c2FkbWluOnNhZG1pbnB3");
-        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-        connection.setRequestProperty("charset", "utf-8");
-        connection.setUseCaches(false);
-        connection.setInstanceFollowRedirects(false);
-        connection.setDoOutput(true);
-        if (postDataStr != null) {
-            byte[] postData = postDataStr.getBytes(StandardCharsets.UTF_8);
-            connection.setRequestProperty("Content-Length", Integer.toString(postData.length));
-            try(DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
-                wr.write(postData);
-            }
-        }
-        connection.connect();
-        int code = connection.getResponseCode();
-
-        String resp = "";
-        if (200 <= code && code <= 200) {
-            resp = IOUtils.toString(connection.getInputStream());
-        } else {
-            resp = IOUtils.toString(connection.getErrorStream());
-        } 
-        return new Object[]{code+"", resp};
-    }
-
     @BeforeClass
     public static void beforeClass() {
-        Main.main(new String[] {"campaignkind=testcampaign", "clickkind=testclick", "shardedclickkind=testshardedclick"});
+        Main.main(CommonTestUtils.mainArgs);
         Spark.awaitInitialization();
     }
 
@@ -77,7 +48,7 @@ public class CampaignServiceIntegrationTest {
     public void testCreateUpdateDeleteCampaign() throws IOException {
         String postDataStr = "name=testn&redirectUrl="+URLEncoder.encode("http://example.org/redir1", "UTF-8")
                             +"&platforms=iphone+android";
-        Object[] res = executeRequest("POST", "/api/campaign", postDataStr);
+        Object[] res = CommonTestUtils.executeRequest(1, "POST", "/api/campaign", postDataStr);
         assertEquals(200, Integer.parseInt((String)res[0]));
 
         Campaign created = new Gson().fromJson((String)res[1], Campaign.class);
@@ -91,7 +62,7 @@ public class CampaignServiceIntegrationTest {
 
         String putDataStr = "name=testupd&redirectUrl="+URLEncoder.encode("http://example.org/redir2", "UTF-8")
             +"&platforms=iphone";
-        Object[] resUpd = executeRequest("PUT", "/api/campaign/"+created.getId(), putDataStr);
+        Object[] resUpd = CommonTestUtils.executeRequest(1, "PUT", "/api/campaign/"+created.getId(), putDataStr);
         assertEquals(200, Integer.parseInt((String)resUpd[0]));
         Campaign updated = new Gson().fromJson((String)resUpd[1], Campaign.class);
         assertEquals("testupd", updated.getName());
@@ -100,7 +71,7 @@ public class CampaignServiceIntegrationTest {
         assertEquals(1, platformsupdated.length);
         assertEquals("iphone", platformsupdated[0]);
 
-        Object[] resDel = executeRequest("DELETE", "/api/campaign/"+created.getId(), null);
+        Object[] resDel = CommonTestUtils.executeRequest(1, "DELETE", "/api/campaign/"+created.getId(), null);
         assertEquals(200, Integer.parseInt((String)resDel[0]));
         Response resp = new Gson().fromJson((String)resDel[1], Response.class);
         assertEquals("ok", resp.getMessage());
@@ -110,32 +81,32 @@ public class CampaignServiceIntegrationTest {
         Object[] res;
         String postDataStr1 = "name=testn1&redirectUrl="+URLEncoder.encode("http://example.org/redir1", "UTF-8")
                 +"&platforms=iphone+android";
-        res = executeRequest("POST", "/api/campaign", postDataStr1);
+        res = CommonTestUtils.executeRequest(1, "POST", "/api/campaign", postDataStr1);
         assertEquals(200, Integer.parseInt((String)res[0]));
         String postDataStr2 = "name=testn2&redirectUrl="+URLEncoder.encode("http://example.org/redir1", "UTF-8")
                 +"&platforms=iphone";
-        res = executeRequest("POST", "/api/campaign", postDataStr2);
+        res = CommonTestUtils.executeRequest(1, "POST", "/api/campaign", postDataStr2);
         assertEquals(200, Integer.parseInt((String)res[0]));
         String postDataStr3 = "name=testn1&redirectUrl="+URLEncoder.encode("http://example.org/redir1", "UTF-8")
                 +"&platforms=android";
-        res = executeRequest("POST", "/api/campaign", postDataStr3);
+        res = CommonTestUtils.executeRequest(1, "POST", "/api/campaign", postDataStr3);
         assertEquals(200, Integer.parseInt((String)res[0]));
 
-        res = executeRequest("GET", "/api/campaign?platform=iphone", null);
-        assertEquals(200, Integer.parseInt((String)res[0]));
-        assertEquals(2, new Gson().fromJson((String)res[1], Campaign[].class).length);
-
-        res = executeRequest("GET", "/api/campaign?platform=android", null);
+        res = CommonTestUtils.executeRequest(1, "GET", "/api/campaign?platform=iphone", null);
         assertEquals(200, Integer.parseInt((String)res[0]));
         assertEquals(2, new Gson().fromJson((String)res[1], Campaign[].class).length);
 
-        res = executeRequest("GET", "/api/campaign", null);
+        res = CommonTestUtils.executeRequest(1, "GET", "/api/campaign?platform=android", null);
+        assertEquals(200, Integer.parseInt((String)res[0]));
+        assertEquals(2, new Gson().fromJson((String)res[1], Campaign[].class).length);
+
+        res = CommonTestUtils.executeRequest(1, "GET", "/api/campaign", null);
         assertEquals(200, Integer.parseInt((String)res[0]));
         Campaign campaigns[] = new Gson().fromJson((String)res[1], Campaign[].class);
         assertEquals(3, campaigns.length);
 
         for (int i=0; i<campaigns.length; i++) {
-            executeRequest("DELETE", "/api/campaign/"+campaigns[i].getId(), null);
+            CommonTestUtils.executeRequest(1, "DELETE", "/api/campaign/"+campaigns[i].getId(), null);
         }
 
     }

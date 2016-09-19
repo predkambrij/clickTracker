@@ -136,17 +136,16 @@ public class CampaignServiceFunctionalTest {
         List<Campaign> allCampaigns;
         allCampaigns = CAMPAIGN_SERVICE.getAllCampaigns(null);
         assertEquals(3, allCampaigns.size());
-        String resp = "{\"response\":\"ok\"}";
-        assertEquals(resp, CAMPAIGN_SERVICE.deleteCampaign(allCampaigns.get(0).getId()));
+        assertEquals("ok", CAMPAIGN_SERVICE.deleteCampaign(allCampaigns.get(0).getId()).getMessage());
         allCampaigns = CAMPAIGN_SERVICE.getAllCampaigns(null);
         assertEquals(2, allCampaigns.size());
-        assertEquals(resp, CAMPAIGN_SERVICE.deleteCampaign(allCampaigns.get(0).getId()));
+        assertEquals("ok", CAMPAIGN_SERVICE.deleteCampaign(allCampaigns.get(0).getId()).getMessage());
         allCampaigns = CAMPAIGN_SERVICE.getAllCampaigns(null);
         assertEquals(1, allCampaigns.size());
-        assertEquals(resp, CAMPAIGN_SERVICE.deleteCampaign(allCampaigns.get(0).getId()));
+        assertEquals("ok", CAMPAIGN_SERVICE.deleteCampaign(allCampaigns.get(0).getId()).getMessage());
         allCampaigns = CAMPAIGN_SERVICE.getAllCampaigns(null);
         assertEquals(0, allCampaigns.size());
-        assertEquals(resp, CAMPAIGN_SERVICE.deleteCampaign("invalid"));
+        assertEquals("ok", CAMPAIGN_SERVICE.deleteCampaign("invalid").getMessage());
     }
     @Test
     public void testUpdateCampaign() {
