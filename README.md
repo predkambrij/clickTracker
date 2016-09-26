@@ -12,7 +12,7 @@
 (configure gcloud so that you can run integration tests and deploy to google app engine)  
 ```gcloud init```  
 
-### Initial build of dependences
+### Initial build of dependencies
 ```mvn clean; mvn assembly:single```
 
 ### Recompile and start the server
@@ -32,7 +32,7 @@
 ```mvn -Dlogback.configurationFile=logback.xml test```
 
 ### Eclipse text editor
-(make sure that all dependences are downloaded)  
+(make sure that all dependencies are downloaded)  
 ```mvn clean; mvn package```  
 for workspace choose path "/w"  
 File -> Open Projects from File System or Archive  
@@ -66,7 +66,7 @@ Note: make sure that local server is running or use app engine server name inste
 
 ## Tracking
 ### Handle incomming clicks (that contains information about campaign ID)
-```curl --user sadmin:sadminpw -iX GET http://127.1.0.3:8080/click/801b642a-577f-4c24-baf8-7e179adb6907```  
+```curl -iX GET http://127.1.0.3:8080/click/801b642a-577f-4c24-baf8-7e179adb6907```  
 
 ### Load test
-```time for ((i=0;i<2000;i++)); do sleep 0.01; curl --user sadmin:sadminpw -X GET http://127.1.0.3:8080/click/801b642a-577f-4c24-baf8-7e179adb6907 & done```  
+```time for ((i=0;i<2000;i++)); do sleep 0.01; curl -X GET http://127.1.0.3:8080/click/801b642a-577f-4c24-baf8-7e179adb6907 & done```  
